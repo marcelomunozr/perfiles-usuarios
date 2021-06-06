@@ -1,25 +1,51 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import {
+	Alert,
+} from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
+import UsersProfile from './features/usersProfile/containers/UsersProfile';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+	const [users, setUsers] = useState([]);
+	const api = axios.create({
+		baseURL: `https://randomuser.me/api/?results=15`
+	});
+
+	const getUsersProfile = async () => {
+		try {
+			const resp = await api.get();
+			setUsers(resp.data.results);
+		}
+		catch (err) {
+			console.error(err);
+		}
+	}
+
+	const handleSetUsersProfile = () => {
+		if (users.length) {
+			console.log('users', users);
+		}
+	}
+
+	useEffect(() => {
+		getUsersProfile();
+	}, [])
+
+	useEffect(() => {
+		handleSetUsersProfile();
+	}, [users]);
+	
+	return (
+			<div className="App-header">
+				<UsersProfile users={users} />
+				{/* Alerta eliminar usuario  */}
+				{true && <Alert variant="danger">usuario eliminado</Alert>}
+				{/* <Button>Holi</Button> */}
+
+			</div>
+	);
+};
 
 export default App;
