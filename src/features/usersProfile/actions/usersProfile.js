@@ -7,9 +7,9 @@ import {
     CLEAR_ALL_USERS_PROFILE,
 } from './types';
 
-const setUsersProfile = usersProfile => ({
+const setUsersProfile = users => ({
     type: SET_USERS_PROFILE,
-    usersProfile,
+    users,
 });
 
 const setIsLoadingUsersProfile = isLoadingUsersProfile => ({
@@ -31,23 +31,21 @@ const clearAllUsersProfile = () => ({
 });
 
 /**
- * Invoca servicio para obtener configuracion taller
+ * Invoca servicio para obtener usuarios
  */
 const getUsersProfileThunk = () => async (dispatch) => {
     const response = await getUsersProfile();
     const {
-        error,
         isCancel,
         data,
     } = response;
-    console.log('responseTHUNK', response);
-    // if (!error) {
-    //     const { body: { listaProductos } } = data;
-    //     dispatch(setDataTaller(listaProductos));
-    // } else {
-    //     dispatch(setErrorDataTaller(true));
-    // }
-    // dispatch(setIsLoadingTaller(false));
+    if (response.status === 200) {
+        const { results } = data;
+        dispatch(setUsersProfile(results));
+    } else {
+        dispatch(setErrorUsersProfile(true));
+    }
+    dispatch(setIsLoadingUsersProfile(false));
     return isCancel;
 };
 

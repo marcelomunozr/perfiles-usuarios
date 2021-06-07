@@ -9,15 +9,13 @@
   }
 }
 
-.App-header {
+.App-content {
   background-color: white;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: #282c34;
 }
 
 .App-link {
@@ -31,4 +29,15 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+/* Custom styles */
+.full-w {
+  min-width: 100%;
+}
+
+p.card-text {
+  margin-bottom: 5px;
+  font-size: 13px;
 }

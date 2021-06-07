@@ -1,40 +1,97 @@
 import { memo, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { getUsersProfileThunk } from '../actions/usersProfile';
+import UserProfile from '../components/UserProfile';
+import InputSearch from '../components/InputSearch';
 import {
 	Container,
 	Row,
-	Col,
-	Card,
-	Button,
+    Spinner,
 } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const UsersProfile = ({
-    users,
-}) => {
-	useEffect(() => {
-        console.log('users', users);
-    }, [users])
-	return (
-        <Container className="mb-4">
-            <Row>
-                <Col>
-                    <Card>
-                        <Card.Img variant="top" src="holder.js/100px180" />
-                        <Card.Body>
-                            <Card.Title>Card Title</Card.Title>
-                            <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                            </Card.Text>
-                            <Button variant="primary">Go somewhere</Button>
-                        </Card.Body>
-                    </Card>
-                </Col>
-                
-            </Row>
-        </Container>
-	);
+export const mapStateToProps = (state) => {
+    const {
+        usersProfile: {
+            users,
+            isLoadingUsersProfile,
+            errorUsersProfile,
+        },
+    } = state;
+    return {
+        users,
+        isLoadingUsersProfile,
+        errorUsersProfile,
+    };
 };
 
-export default UsersProfile;
+const UsersProfile = ({
+    dispatch,
+    users,
+    isLoadingUsersProfile,
+    errorUsersProfile,
+}) => {
+    const [searchUser, setSearchUser] = useState('');
+
+    const initData = () => {
+        dispatch(getUsersProfileThunk());
+    }
+
+    const filteredUsers = () => {
+        if (users.length && searchUser) {
+            const userFilter = users.filter(user => {
+                return user.name.first.toLowerCase().includes( searchUser.toLowerCase() );
+            })
+            return userFilter;
+        }
+        return users;
+    };
+
+	useEffect(() => {
+        initData();
+    }, []);
+
+    const renderFormSearch = () => {
+        return (
+            <InputSearch
+                users={users}
+                searchUser={searchUser}
+                setSearchUser={setSearchUser}
+            />
+        );
+    };
+
+    const renderUsersList = () => {
+        if (users?.length) {
+            const filterUsers = filteredUsers();
+            return (
+                <Row>
+                    {
+                        filterUsers.map((user, index) => {
+                            console.log('user', user);
+                            return (<UserProfile user={user} key={index} />)
+                        })
+                    }
+                </Row>
+            );
+        }
+    };
+
+	const renderUsersProfile = () => {
+        if (isLoadingUsersProfile) {
+            return (
+                <Spinner animation="border" variant="primary"/>
+            );
+        }
+        return (
+            <Container className="mb-4">
+                {renderFormSearch()}
+                {renderUsersList()}
+            </Container>
+        );
+    };
+
+    return renderUsersProfile();
+};
+
+export default connect(mapStateToProps)(memo(UsersProfile));
