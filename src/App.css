@@ -33,6 +33,13 @@
 
 
 /* Custom styles */
+.jumbotron {
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  background-color: #e9ecef;
+  border-radius: .3rem;
+}
+
 .full-w {
   min-width: 100%;
 }
@@ -40,4 +47,9 @@
 p.card-text {
   margin-bottom: 5px;
   font-size: 13px;
+}
+
+.col-flx-end {
+  display: flex;
+  justify-content: flex-end;
 }

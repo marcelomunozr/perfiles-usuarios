@@ -1,6 +1,10 @@
-import { getUsersProfile } from '../services/usersProfile';
+import {
+    getUsersProfile,
+    deleteUser,
+} from '../services/usersProfile';
 import {
     SET_USERS_PROFILE,
+    DELETE_USER_PROFILE,
     SET_IS_LOADING_USERS_PROFILE,
     SET_ERROR_USERS_PROFILE,
     CLEAR_ERROR_USERS_PROFILE,
@@ -10,6 +14,11 @@ import {
 const setUsersProfile = users => ({
     type: SET_USERS_PROFILE,
     users,
+});
+
+const deleteUserProfile = user => ({
+    type: DELETE_USER_PROFILE,
+    user,
 });
 
 const setIsLoadingUsersProfile = isLoadingUsersProfile => ({
@@ -31,7 +40,7 @@ const clearAllUsersProfile = () => ({
 });
 
 /**
- * Invoca servicio para obtener usuarios
+ * Obtiene usuarios
  */
 const getUsersProfileThunk = () => async (dispatch) => {
     const response = await getUsersProfile();
@@ -41,12 +50,29 @@ const getUsersProfileThunk = () => async (dispatch) => {
     } = response;
     if (response.status === 200) {
         const { results } = data;
-        dispatch(setUsersProfile(results));
+        // se agrega idKey por que algunos id.value de los usuarios viene null
+        const customResults = results.map((user, index) => ({ ...user, idKey: `${index}-${user.login.username}` }) )
+        dispatch(setUsersProfile(customResults));
     } else {
         dispatch(setErrorUsersProfile(true));
     }
     dispatch(setIsLoadingUsersProfile(false));
     return isCancel;
+};
+
+/**
+ * TODO:
+ * Eliminar usuario
+ */
+const deleteUserProfileThunk = (userData, users) => async (dispatch) => {
+    /* TODO: 
+     * eliminar dato desde la API
+     * controlar respuesta al eliminar
+    const response = await deleteUser(userData);
+    */
+   const { idKey } = userData;
+   const usersAfterDelete = users.filter(user => user.idKey !== idKey);
+   dispatch(setUsersProfile(usersAfterDelete));
 };
 
 
@@ -56,6 +82,8 @@ export {
     setErrorUsersProfile,
     clearErrorUsersProfile,
     clearAllUsersProfile,
+    deleteUserProfile,
 
     getUsersProfileThunk,
+    deleteUserProfileThunk,
 };

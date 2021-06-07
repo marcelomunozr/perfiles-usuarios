@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import {
     SET_USERS_PROFILE,
+    DELETE_USER_PROFILE,
     SET_IS_LOADING_USERS_PROFILE,
     SET_ERROR_USERS_PROFILE,
     CLEAR_ERROR_USERS_PROFILE,
@@ -11,6 +12,8 @@ const usersProfileReducers = (state = null, action) => {
     switch (action.type) {
         case SET_USERS_PROFILE:
             return action.users;
+        case DELETE_USER_PROFILE:
+            return null;
         case CLEAR_ERROR_USERS_PROFILE:
             return null;
         case CLEAR_ALL_USERS_PROFILE:

@@ -1,31 +1,36 @@
 import {
-    Row,
     Button,
     Form,
-    Col,
+    Jumbotron,
 } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import labels from '../constants/labels';
 
 const InputSearch = ({
-    users,
     searchUser,
     setSearchUser,
 }) => {
 
     return (
-        <Row className="mb-4">
-            <Col sm={4}>
-                <Button variant="primary" size="lg">Buscar</Button>
-            </Col>
-            <Col sm={8}>
-                <Form.Control
-                    size="lg"
-                    type="text"
-                    placeholder="Buscar usuarios"
-                    onChange={e => setSearchUser(e.target.value)}
-                />
-            </Col>
-        </Row>
+        <Jumbotron>
+            <h1>{labels.USERS_PROFILE.TITLE}</h1>
+            <p>{labels.USERS_PROFILE.MSG}</p>
+            <Form.Control
+                size="lg"
+                type="text"
+                placeholder={labels.USERS_PROFILE.INPUT_SEARCH}
+                onChange={e => setSearchUser(e.target.value)}
+                className="mb-4"
+                value={searchUser}
+            />
+            <Button
+                variant="success"
+                disabled={!searchUser}
+                onClick={() => setSearchUser('')}
+            >
+                {labels.BUTTONS.CLEAN_SEARCH}
+            </Button>
+        </Jumbotron>
     );
 };
 
